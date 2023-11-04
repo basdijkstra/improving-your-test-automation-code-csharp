@@ -8,7 +8,7 @@ namespace ImprovingYourTestAutomationCode
 {
     public class TestBase
     {
-        private WireMockServer Server { get; set; }
+        private WireMockServer? Server { get; set; }
 
         [SetUp]
         protected void StartServer()
