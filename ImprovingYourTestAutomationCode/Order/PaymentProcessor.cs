@@ -14,7 +14,7 @@
             // With Stripe or iDeal, you can pay for every order
             if (
                 this.paymentProcessorType.Equals(PaymentProcessorType.STRIPE) ||
-                this.paymentProcessorType.Equals(PaymentProcessorType.STRIPE)
+                this.paymentProcessorType.Equals(PaymentProcessorType.IDEAL)
                 )
             {
                 return true;
