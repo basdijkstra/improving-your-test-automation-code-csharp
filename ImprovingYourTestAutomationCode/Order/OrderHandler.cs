@@ -2,10 +2,10 @@
 {
     public class OrderHandler
     {
-        private readonly StockManager stockManager;
+        private readonly IStockManager stockManager;
         private readonly IPaymentProcessor paymentProcessor;
 
-        public OrderHandler(StockManager stockManager, IPaymentProcessor paymentProcessor)
+        public OrderHandler(IStockManager stockManager, IPaymentProcessor paymentProcessor)
         {
             this.stockManager = stockManager;
             this.paymentProcessor = paymentProcessor;

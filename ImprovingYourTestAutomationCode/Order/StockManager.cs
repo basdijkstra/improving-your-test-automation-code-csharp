@@ -1,6 +1,6 @@
 ﻿namespace ImprovingYourTestAutomationCode.Order
 {
-    public class StockManager
+    public class StockManager : IStockManager
     {
         private Dictionary<OrderItem, int> stock;
 

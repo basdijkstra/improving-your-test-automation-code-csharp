@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using ImprovingYourTestAutomationCode.Order;
+using Moq;
+using NUnit.Framework;
 
 namespace ImprovingYourTestAutomationCode.Exercises
 {
@@ -8,14 +10,6 @@ namespace ImprovingYourTestAutomationCode.Exercises
         [Test]
         public void UseMockedStockManager()
         {
-            /**
-             * First, write a test that:
-             * - Creates a new OrderHandler
-             * - Places 6 orders for OrderItem.SUPER_MARIO_BROS_3, each with quantity = 1
-             *   (remember, the original stock is only 5)
-             * - Asserts that the 6th order fails
-             */
-
             /**
              * Now that we can inject a StockManager object when creating the OrderHandler,
              * write a test that:
@@ -28,6 +22,15 @@ namespace ImprovingYourTestAutomationCode.Exercises
              * - Asserts that this fails (so without having to place 5 actual orders first)
              * - Verifies that exactly one call was made to the mocked StockManager method
              */
+
+            var stockManager = new Mock<IStockManager>();
+            stockManager.Setup(m => m.RemoveFromStock(OrderItem.SUPER_MARIO_BROS_3, 1)).Returns(false);
+
+            var orderHandler = new OrderHandler(stockManager.Object, new StripeProcessor());
+
+            bool result = orderHandler.HandleRemoveFromStock(OrderItem.SUPER_MARIO_BROS_3, 1);
+
+            Assert.That(result, Is.False);
         }
 
         [Test]
