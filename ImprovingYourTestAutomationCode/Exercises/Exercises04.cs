@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using ImprovingYourTestAutomationCode.Models;
+using NUnit.Framework;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -19,64 +20,28 @@ namespace ImprovingYourTestAutomationCode.Exercises
             SetupMockResponses();
         }
 
-        [Test]
-        public void ApplyFor1000DollarLoan_with100DownPayment_shouldBeApproved()
+        [TestCase("1000", "100", "Approved", TestName = "A 1000 dollar loan should be approved")]
+        [TestCase("10000", "100", "Denied", TestName = "A 10000 dollar loan should be denied")]
+        [TestCase("5000", "500", "Approved", TestName = "A 5000 dollar loan should be approved")]
+
+        public void ApplyFor1000DollarLoan_with100DownPayment_shouldBeApproved
+            (string loanAmount, string downPayment, string expectedResult)
         {
-            string requestBody = @"
-                {
-                    ""loanAmount"": ""1000"",
-                    ""downPayment"": ""100"",
-                    ""firstName"": ""John"",
-                    ""lastName"" : ""Doe""
-                }";
+            var loanRequest = new LoanRequest
+            {
+                LoanAmount = loanAmount,
+                DownPayment = downPayment,
+                FirstName = "John",
+                LastName = "Doe",
+            };
 
             Given()
-                .Body(requestBody)
+                .Body(loanRequest)
                 .When()
                 .Post("http://localhost:9876/loanApplication")
                 .Then()
                 .StatusCode(201)
-                .Body("$.result", NHamcrest.Is.EqualTo("Approved"));
-        }
-
-        [Test]
-        public void ApplyFor10000DollarLoan_with100DownPayment_shouldBeDenied()
-        {
-            string requestBody = @"
-                {
-                    ""loanAmount"": ""10000"",
-                    ""downPayment"": ""100"",
-                    ""firstName"": ""John"",
-                    ""lastName"" : ""Doe""
-                }";
-
-            Given()
-                .Body(requestBody)
-                .When()
-                .Post("http://localhost:9876/loanApplication")
-                .Then()
-                .StatusCode(201)
-                .Body("$.result", NHamcrest.Is.EqualTo("Denied"));
-        }
-
-        [Test]
-        public void ApplyFor5000DollarLoan_with500DownPayment_shouldBeApproved()
-        {
-            string requestBody = @"
-                {
-                    ""loanAmount"": ""5000"",
-                    ""downPayment"": ""500"",
-                    ""firstName"": ""John"",
-                    ""lastName"" : ""Doe""
-                }";
-
-            Given()
-                .Body(requestBody)
-                .When()
-                .Post("http://localhost:9876/loanApplication")
-                .Then()
-                .StatusCode(201)
-                .Body("$.result", NHamcrest.Is.EqualTo("Approved"));
+                .Body("$.result", NHamcrest.Is.EqualTo(expectedResult));
         }
 
         [OneTimeTearDown]
