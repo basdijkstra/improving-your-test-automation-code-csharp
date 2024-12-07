@@ -10,10 +10,14 @@ namespace ImprovingYourTestAutomationCode.Exercises
         [Test]
         public void Order1CopyOfFC25_ShouldLeave9CopiesRemaining()
         {
+            var stock = new Dictionary<OrderItem, int>()
+            {
+                { OrderItem.FC_25, 10 },
+            };
 
-            OrderHandler orderHandler = new OrderHandler();
+            OrderHandler orderHandler = new OrderHandler(new StockManager(stock), new StripeProcessor());
 
-            bool result = orderHandler.HandleOrder(OrderItem.FC_25, 1);
+            bool result = orderHandler.HandleRemoveFromStock(OrderItem.FC_25, 1);
 
             Assert.That(result, Is.True);
             Assert.That(orderHandler.GetStockForItem(OrderItem.FC_25), Is.EqualTo(9));
@@ -22,10 +26,14 @@ namespace ImprovingYourTestAutomationCode.Exercises
         [Test]
         public void Order101CopiesOfFortnite_ShouldFail()
         {
+            var stock = new Dictionary<OrderItem, int>()
+            {
+                { OrderItem.FORTNITE, 100 },
+            };
 
-            OrderHandler orderHandler = new OrderHandler();
+            OrderHandler orderHandler = new OrderHandler(new StockManager(stock), new StripeProcessor());
 
-            bool result = orderHandler.HandleOrder(OrderItem.FORTNITE, 101);
+            bool result = orderHandler.HandleRemoveFromStock(OrderItem.FORTNITE, 101);
 
             Assert.That(result, Is.False);
             Assert.That(orderHandler.GetStockForItem(OrderItem.FORTNITE), Is.EqualTo(100));
@@ -34,10 +42,15 @@ namespace ImprovingYourTestAutomationCode.Exercises
         [Test]
         public void AddStockForDOTT_ShouldThrowExpectedException()
         {
+            var stock = new Dictionary<OrderItem, int>()
+            {
+                { OrderItem.FC_25, 10 },
+            };
 
-            OrderHandler orderHandler = new OrderHandler();
+            OrderHandler orderHandler = new OrderHandler(new StockManager(stock), new StripeProcessor());
 
-            Assert.Throws<ArgumentException>(() => {
+            Assert.Throws<ArgumentException>(() =>
+            {
                 orderHandler.AddStockForItem(OrderItem.DAY_OF_THE_TENTACLE, 10);
             });
         }
@@ -50,6 +63,17 @@ namespace ImprovingYourTestAutomationCode.Exercises
              * when the stock for an item is equal to 0? If so, how? And is this the most
              * efficient way to test this? If not, what do we need to improve?
              */
+
+            var stock = new Dictionary<OrderItem, int>()
+            {
+                { OrderItem.FC_25, 0 },
+            };
+
+            OrderHandler orderHandler = new OrderHandler(new StockManager(stock), new StripeProcessor());
+
+            bool result = orderHandler.HandleRemoveFromStock(OrderItem.FC_25, 1);
+
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -60,6 +84,10 @@ namespace ImprovingYourTestAutomationCode.Exercises
              * with more than five copies of a game in it using PayPal? Why not?
              * What can we (should we) do to improve our code?
              */
+
+            var paymentProcessor = new PayPalProcessor();
+
+            Assert.That(paymentProcessor.PayFor(OrderItem.DAY_OF_THE_TENTACLE, 6), Is.False);
         }
 
         /**

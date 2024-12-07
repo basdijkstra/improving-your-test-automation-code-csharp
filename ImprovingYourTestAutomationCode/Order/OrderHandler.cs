@@ -3,22 +3,22 @@
     public class OrderHandler
     {
         private readonly StockManager stockManager;
-        private readonly PaymentProcessor paymentProcessor;
+        private readonly IPaymentProcessor paymentProcessor;
 
-        public OrderHandler()
+        public OrderHandler(StockManager stockManager, IPaymentProcessor paymentProcessor)
         {
-            this.stockManager = new StockManager();
-            this.paymentProcessor = new PaymentProcessor(PaymentProcessorType.IDEAL);
+            this.stockManager = stockManager;
+            this.paymentProcessor = paymentProcessor;
         }
 
-        public bool HandleOrder(OrderItem orderItem, int quantity)
+        public bool HandleRemoveFromStock(OrderItem orderItem, int quantity)
         {
-            if (this.stockManager.RemoveFromStock(orderItem, quantity))
-            {
-                return this.paymentProcessor.PayFor(orderItem, quantity);
-            }
+            return this.stockManager.RemoveFromStock(orderItem, quantity);
+        }
 
-            return false;
+        public bool HandleOrderPayment(OrderItem orderItem, int quantity)
+        {
+            return this.paymentProcessor.PayFor(orderItem, quantity);
         }
 
         public int GetStockForItem(OrderItem item)
