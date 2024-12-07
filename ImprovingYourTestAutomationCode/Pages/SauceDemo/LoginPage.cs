@@ -2,11 +2,11 @@
 
 namespace ImprovingYourTestAutomationCode.Pages.SauceDemo
 {
-    public class LoginPage : BasePage
+    public class LoginPage
     {
         private readonly IPage page;
 
-        public LoginPage(IPage page) : base(page)
+        public LoginPage(IPage page)
         {
             this.page = page;
         }

@@ -2,11 +2,11 @@
 
 namespace ImprovingYourTestAutomationCode.Pages.SauceDemo
 {
-    public class BasePage
+    public class HeaderComponent
     {
         private readonly IPage page;
 
-        public BasePage(IPage page)
+        public HeaderComponent(IPage page)
         {
             this.page = page;
         }

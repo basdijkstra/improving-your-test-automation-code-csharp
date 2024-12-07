@@ -18,9 +18,11 @@ namespace ImprovingYourTestAutomationCode.Exercises
             await new ProductsOverviewPage(Page)
                 .SelectProduct("Sauce Labs Backpack");
 
-            var productDetailPage = new ProductDetailPage(Page);
-            await productDetailPage.AddProductToCart();
-            await productDetailPage.GotoShoppingCart();
+            await new ProductDetailPage(Page)
+                .AddProductToCart();
+
+            await new HeaderComponent(Page)
+                .GotoShoppingCart();
 
             await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Checkout" })).ToBeVisibleAsync();
         }
