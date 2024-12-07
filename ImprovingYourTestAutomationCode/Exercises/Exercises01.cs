@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using ImprovingYourTestAutomationCode.Pages.SauceDemo;
+using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 
@@ -10,16 +11,16 @@ namespace ImprovingYourTestAutomationCode.Exercises
         [Test]
         public async Task OrderABackpack()
         {
-            await Page.GotoAsync("https://www.saucedemo.com");
+            var loginPage = new LoginPage(Page);
+            await loginPage.Open();
+            await loginPage.LoginAs("standard_user", "secret_sauce");
 
-            await Page.GetByPlaceholder("Username").FillAsync("standard_user");
-            await Page.GetByPlaceholder("Password").FillAsync("secret_sauce");
-            await Page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
+            await new ProductsOverviewPage(Page)
+                .SelectProduct("Sauce Labs Backpack");
 
-            await Page.GetByText("Sauce Labs Backpack").ClickAsync();
-            await Page.GetByText("Add to cart").ClickAsync();
-
-            await Page.Locator("[data-test=shopping-cart-link]").ClickAsync();
+            var productDetailPage = new ProductDetailPage(Page);
+            await productDetailPage.AddProductToCart();
+            await productDetailPage.GotoShoppingCart();
 
             await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Checkout" })).ToBeVisibleAsync();
         }
